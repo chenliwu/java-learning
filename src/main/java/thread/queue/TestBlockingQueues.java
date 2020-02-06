@@ -88,9 +88,10 @@ public class TestBlockingQueues {
     }
 
     public static void main(String[] args) {
+        System.out.println("main");
         test("LinkedBlockingQueue",new LinkedBlockingQueue<LiftOff>());
         test("ArrayBlockingQueue",new ArrayBlockingQueue<LiftOff>(3));
-        test("ArrayBlockingQueue",new SynchronousQueue<LiftOff>());
+        test("SynchronousQueue",new SynchronousQueue<LiftOff>());
     }
 
 }
