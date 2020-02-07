@@ -9,21 +9,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
-class LiftOff extends Thread {
-
-    private String name;
-
-    public LiftOff(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void run() {
-        super.run();
-        System.out.println("LiftOff.run(): the name is " + name);
-    }
-}
-
 class LiftOffRunner implements Runnable {
 
     private BlockingQueue<LiftOff> rockets;
@@ -34,6 +19,7 @@ class LiftOffRunner implements Runnable {
 
     public void add(LiftOff liftOff) {
         try {
+            // 添加元素到阻塞队列
             rockets.put(liftOff);
         } catch (InterruptedException e) {
             System.out.println("add().Interrupted exception:" + e.getMessage());
@@ -80,18 +66,18 @@ public class TestBlockingQueues {
         Thread thread = new Thread(runner);
         thread.start();
         for (int i = 0; i < 5; i++) {
-            runner.add(new LiftOff("lift"+i));
+            runner.add(new LiftOff("lift" + i));
         }
-        getKey("Press 'Enter' ("+ msg+ ") ");
+        getKey("Press 'Enter' (" + msg + ") ");
         thread.interrupt();
-        System.out.println("Finished "+ msg + " test");
+        System.out.println("Finished " + msg + " test");
     }
 
     public static void main(String[] args) {
         System.out.println("main");
-        test("LinkedBlockingQueue",new LinkedBlockingQueue<LiftOff>());
-        test("ArrayBlockingQueue",new ArrayBlockingQueue<LiftOff>(3));
-        test("SynchronousQueue",new SynchronousQueue<LiftOff>());
+        test("LinkedBlockingQueue", new LinkedBlockingQueue<LiftOff>());
+        test("ArrayBlockingQueue", new ArrayBlockingQueue<LiftOff>(3));
+        test("SynchronousQueue", new SynchronousQueue<LiftOff>());
     }
 
 }
