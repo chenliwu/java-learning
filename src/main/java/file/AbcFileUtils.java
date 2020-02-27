@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 农行文件操作工具类
+ * 文件操作工具类
  *
  * @author chenlw 2019/08/06
  */
@@ -17,20 +17,32 @@ public class AbcFileUtils {
 
     public static void main(String[] args) {
         System.out.println("当前JVM的默认字符集：" + Charset.defaultCharset());
-        testUTF8File();
-        testGBKFile();
-        testGB2312File();
+        testReadCharsetFile();
     }
 
-    private static void testUTF8File() {
-        try {
-            // JVM默认字符集
-            // window：GBK； macOS：UTF-8；
-            // 由于JVM字符集编码的不同，在不同平台上运行程序就可能得不到正确的结果，因此在进行IO操作的时候要特别注意字符编码问题，要统一字符编码格式。
 
+    /**
+     * 测试读取不同编码格式的文件内容，JVM默认字符集的表现
+     * <p>
+     * 总结：
+     * 1、JVM默认字符编码格式为：
+     * window：GBK； macOS：UTF-8；
+     * 2、由于JVM字符集编码的不同，在不同平台上运行程序就可能得不到正确的结果，因此在进行IO操作的时候要特别注意字符编码问题，要统一字符编码格式。
+     */
+    static void testReadCharsetFile() {
+        testReadUTF8File();
+        testReadGBKFile();
+        testReadGB2312File();
+    }
+
+    /**
+     * 测试UTF-8编码格式文件内容
+     * - JVM默认字符集编码格式为UTF8时，文件内容能够正常显示
+     */
+    private static void testReadUTF8File() {
+        try {
             // 文件编码格式为UTF-8
             String fileName = "testCharsetFile_UTF8.txt";
-
             // 如果运行平台-JVM字符集默认GBK，中文会显示乱码。
             String defaultCharsetFileContent = readMfsBatchFileContent(resourceParentPath, fileName, null);
             System.out.println();
@@ -46,14 +58,14 @@ public class AbcFileUtils {
         }
     }
 
-    private static void testGBKFile() {
+    /**
+     * 测试GBK编码格式文件内容
+     * - JVM默认字符集编码格式为UTF8时，文件内容不能够正常显示； 需要指定编码格式为GBK时，文件内容才能正常显示。
+     */
+    private static void testReadGBKFile() {
         try {
-            // JVM默认字符集
-            // window：GBK； macOS：UTF-8；
-            // 由于JVM字符集编码的不同，在不同平台上运行程序就可能得不到正确的结果，因此在进行IO操作的时候要特别注意字符编码问题，要统一字符编码格式。
-            // 文件编码格式为UTF-8
+            // 文件编码格式为GBK
             String fileName = "testCharsetFile_GBK.txt";
-
             // 如果运行平台-JVM字符集默认GBK，中文会显示乱码。
             String defaultCharsetFileContent = readMfsBatchFileContent(resourceParentPath, fileName, null);
             System.out.println();
@@ -69,12 +81,13 @@ public class AbcFileUtils {
         }
     }
 
-    private static void testGB2312File() {
+    /**
+     * 测试GBK编码格式文件内容
+     * - JVM默认字符集编码格式为UTF8时，文件内容不能够正常显示； 需要指定编码格式为GB2312时，文件内容才能正常显示。
+     */
+    private static void testReadGB2312File() {
         try {
-            // JVM默认字符集
-            // window：GBK； macOS：UTF-8；
-            // 由于JVM字符集编码的不同，在不同平台上运行程序就可能得不到正确的结果，因此在进行IO操作的时候要特别注意字符编码问题，要统一字符编码格式。
-            // 文件编码格式为UTF-8
+            // 文件编码格式为GB2312
             String fileName = "testCharsetFile_GB2312.txt";
 
             // 如果运行平台-JVM字符集默认GBK，中文会显示乱码。
@@ -217,8 +230,8 @@ public class AbcFileUtils {
         try {
             fileReader = new FileReader(batchFilePath);
             // bufferedReader = new BufferedReader(fileReader);
-            // Java读取数据流的时候，一定要指定数据流的编码方式，否则将使用本地环境中的默认字符集。
             if (charsetName != null) {
+                // Java读取数据流的时候，若不指定数据流的编码方式，否则将使用本地环境中的默认字符集。
                 bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(batchFilePath), charsetName));
             } else {
                 bufferedReader = new BufferedReader(fileReader);
@@ -285,6 +298,7 @@ public class AbcFileUtils {
         try {
             fileReader = new FileReader(filePath);
             if (charsetName != null) {
+                // Java读取数据流的时候，若不指定数据流的编码方式，否则将使用本地环境中的默认字符集。
                 bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), charsetName));
             } else {
                 bufferedReader = new BufferedReader(fileReader);
