@@ -15,11 +15,73 @@ public class AbcFileUtils {
 
     private static String resourceParentPath = System.getProperty("user.dir") + "/testFiles";
 
+    private static String outputFilePath = resourceParentPath + File.separator + "outputFiles";
+
     public static void main(String[] args) {
         System.out.println("当前JVM的默认字符集：" + Charset.defaultCharset());
-        testReadCharsetFile();
+        // testReadCharsetFile();
+
+        testSaveContentToFileCharset();
     }
 
+    /************************************ 测试保存内容到文件的编码格式   ***************************************/
+
+    static void testSaveContentToFileCharset() {
+        testSaveContentToFileUsingJVMDefaultCharset();
+        testSaveContentToFileUsingUTF8Charset();
+        testSaveContentToFileUsingGBKCharset();
+    }
+
+    /**
+     * 使用JVM默认字符编码格式保存内容
+     */
+    static void testSaveContentToFileUsingJVMDefaultCharset() {
+        try {
+            String saveContent = "测试保存内容到文件的编码格式-JVM默认字符编码格式";
+            saveDataToFileUsingCharset(outputFilePath, "testSaveContentToFileUsing_JVMDefaultCharset.txt", saveContent, null);
+            System.out.println();
+            System.out.println("使用JVM默认字符编码格式保存内容 成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("异常：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 测试保存内容到文件的编码格式，UTF-8
+     */
+    static void testSaveContentToFileUsingUTF8Charset() {
+        try {
+            String saveContent = "测试保存内容到文件的编码格式-UTF8";
+            saveDataToFileUsingCharset(outputFilePath, "testSaveContentToFile_UTF8Charset.txt", saveContent, StandardCharsets.UTF_8.name());
+            System.out.println();
+            System.out.println("使用UTF-8字符编码格式保存内容 成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("异常：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 测试保存内容到文件的编码格式，GBK
+     */
+    static void testSaveContentToFileUsingGBKCharset() {
+        try {
+            String saveContent = "测试保存内容到文件的编码格式-GBK";
+            saveDataToFileUsingCharset(outputFilePath, "testSaveContentToFile_GBKCharset.txt", saveContent, "GBK");
+            System.out.println();
+            System.out.println("使用GBK字符编码格式保存内容 成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("异常：" + e.getMessage());
+        }
+    }
+
+
+    /************************************ 测试保存内容到文件的编码格式   ***************************************/
+
+
+    /************************************ 测试读取不同编码格式的文件内容   ***************************************/
 
     /**
      * 测试读取不同编码格式的文件内容，JVM默认字符集的表现
@@ -104,6 +166,7 @@ public class AbcFileUtils {
             System.out.println("异常：" + e.getMessage());
         }
     }
+    /************************************ 测试读取不同编码格式的文件内容   ***************************************/
 
 
     /**
@@ -131,6 +194,40 @@ public class AbcFileUtils {
             }
             if (fileWriter != null) {
                 fileWriter.close();
+            }
+        }
+    }
+
+
+    /**
+     * 保存字符串到文件，并指定编码格式
+     *
+     * @param directoryPath 文件目录
+     * @param fileName      文件名称
+     * @param data          要保存到文件的内容
+     * @param charsetName   文件编码格式，若传null值，则使用JVM默认字符编码格式
+     * @throws Exception
+     */
+    public static void saveDataToFileUsingCharset(String directoryPath, String fileName, String data, String charsetName) throws Exception {
+        String filePath = directoryPath + File.separator + fileName;
+        checkDirectory(directoryPath);
+
+        BufferedWriter bufferedWriter = null;
+        try {
+            File file = new File(filePath);
+            file.createNewFile();
+            if (charsetName != null) {
+                bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), charsetName));
+            } else {
+                bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+            }
+
+            bufferedWriter.write(data);
+        } catch (Exception e) {
+            throw new Exception("保存数据到文件失败：" + e.getMessage());
+        } finally {
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
             }
         }
     }
