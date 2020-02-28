@@ -19,9 +19,10 @@ public class AbcFileUtils {
 
     public static void main(String[] args) {
         System.out.println("当前JVM的默认字符集：" + Charset.defaultCharset());
-        // testReadCharsetFile();
 
-        testSaveContentToFileCharset();
+        testReadCharsetFile();
+
+        // testSaveContentToFileCharset();
     }
 
     /************************************ 测试保存内容到文件的编码格式   ***************************************/
@@ -30,6 +31,8 @@ public class AbcFileUtils {
         testSaveContentToFileUsingJVMDefaultCharset();
         testSaveContentToFileUsingUTF8Charset();
         testSaveContentToFileUsingGBKCharset();
+        testSaveContentToFileUsingGB2312Charset();
+        testSaveContentToFileUsingISO8859_1Charset();
     }
 
     /**
@@ -77,6 +80,36 @@ public class AbcFileUtils {
         }
     }
 
+    /**
+     * 测试保存内容到文件的编码格式，GB2312
+     */
+    static void testSaveContentToFileUsingGB2312Charset() {
+        try {
+            String saveContent = "测试保存内容到文件的编码格式-GB2312";
+            saveDataToFileUsingCharset(outputFilePath, "testSaveContentToFile_GB2312Charset.txt", saveContent, "GB2312");
+            System.out.println();
+            System.out.println("使用GB2312字符编码格式保存内容 成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("异常：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 测试保存内容到文件的编码格式，ISO-8859-1
+     */
+    static void testSaveContentToFileUsingISO8859_1Charset() {
+        try {
+            String saveContent = "测试保存内容到文件的编码格式:ISO-8859-1";
+            saveDataToFileUsingCharset(outputFilePath, "testSaveContentToFile_ISO8859_1Charset.txt", saveContent, "ISO-8859-1");
+            System.out.println();
+            System.out.println("使用ISO-8859-1字符编码格式保存内容 成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("异常：" + e.getMessage());
+        }
+    }
+
 
     /************************************ 测试保存内容到文件的编码格式   ***************************************/
 
@@ -112,8 +145,8 @@ public class AbcFileUtils {
             System.out.println("按JVM字符默认编码显示文件内容：" + defaultCharsetFileContent);
 
             // UTF-8编码显示，中文是正常的
-            String utf8CharsetFileContent = readMfsBatchFileContent(resourceParentPath, fileName, StandardCharsets.UTF_8.name());
-            System.out.println("UTF_8编码显示文件内容：" + utf8CharsetFileContent);
+            String fileContent = readMfsBatchFileContent(resourceParentPath, fileName, StandardCharsets.UTF_8.name());
+            System.out.println("UTF_8编码显示文件内容：" + fileContent);
 
         } catch (Exception e) {
             System.out.println("异常：" + e.getMessage());
@@ -134,9 +167,8 @@ public class AbcFileUtils {
             System.out.println("测试-文件编码格式为GBK");
             System.out.println("按JVM字符默认编码显示文件内容：" + defaultCharsetFileContent);
 
-            String utf8CharsetFileContent = readMfsBatchFileContent(resourceParentPath, fileName, "GBK");
-            // String utf8CharsetFileContent = new String(defaultCharsetFileContent.getBytes(), "GBK");
-            System.out.println("GBK编码显示文件内容：" + utf8CharsetFileContent);
+            String fileContent = readMfsBatchFileContent(resourceParentPath, fileName, "GBK");
+            System.out.println("GBK编码显示文件内容：" + fileContent);
 
         } catch (Exception e) {
             System.out.println("异常：" + e.getMessage());
@@ -158,14 +190,14 @@ public class AbcFileUtils {
             System.out.println("测试-文件编码格式为GB2312");
             System.out.println("按JVM字符默认编码显示文件内容：" + defaultCharsetFileContent);
 
-            String utf8CharsetFileContent = readMfsBatchFileContent(resourceParentPath, fileName, "GB2312");
-            // String utf8CharsetFileContent = new String(defaultCharsetFileContent.getBytes(), "GBK");
-            System.out.println("GB2312编码显示文件内容：" + utf8CharsetFileContent);
+            String fileContent = readMfsBatchFileContent(resourceParentPath, fileName, "GB2312");
+            System.out.println("GB2312编码显示文件内容：" + fileContent);
 
         } catch (Exception e) {
             System.out.println("异常：" + e.getMessage());
         }
     }
+
     /************************************ 测试读取不同编码格式的文件内容   ***************************************/
 
 
@@ -186,6 +218,7 @@ public class AbcFileUtils {
             fileWriter = new FileWriter(file);
             printWriter = new PrintWriter(fileWriter);
             printWriter.print(data);
+            printWriter.flush();
         } catch (Exception e) {
             throw new Exception("保存数据到文件失败：" + e.getMessage());
         } finally {
@@ -223,6 +256,7 @@ public class AbcFileUtils {
             }
 
             bufferedWriter.write(data);
+            bufferedWriter.flush();
         } catch (Exception e) {
             throw new Exception("保存数据到文件失败：" + e.getMessage());
         } finally {
