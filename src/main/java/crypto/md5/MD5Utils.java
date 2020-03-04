@@ -7,7 +7,7 @@ import java.security.MessageDigest;
  *
  * @author chenlw
  */
-public class Md5Utils {
+public class MD5Utils {
 
     public static void main(String[] args) {
         System.out.println(encode("chenlw"));
