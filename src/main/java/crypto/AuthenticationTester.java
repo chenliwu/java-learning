@@ -20,8 +20,32 @@ public class AuthenticationTester {
     private static final String KEY = "1234567890abcdef1234567890abcdef";
 
     public static void main(String[] args) {
-        String encryptedBase64String = getEncryptedBase64String(KEY);
-        testDecrypt(KEY,encryptedBase64String);
+
+        try {
+            UserAuthentication userAuthentication = new UserAuthentication();
+            userAuthentication.setUsername("username");
+            userAuthentication.setRequestTime(System.currentTimeMillis());
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(userAuthentication);
+
+            System.out.println("要加密的数据：" + json);
+
+            // 加密数据
+            String encryptedBase64String = getEncryptedBase64String(KEY, json);
+
+            // 往加密串添加字符、删除字符串、修改字符串，就会导致解密失败。报错就说明该数据可能被篡改过，不可信任。
+            // encryptedBase64String = encryptedBase64String+"123123";
+            // encryptedBase64String = encryptedBase64String.substring(0, encryptedBase64String.length() - 3);
+            // encryptedBase64String = encryptedBase64String.replace("9","12123");
+
+            // 解密数据
+            testDecrypt(KEY, encryptedBase64String);
+
+        } catch (Exception e) {
+            System.out.println("main.异常：" + e.getMessage());
+        }
+
+
     }
 
     public static void test() {
@@ -48,35 +72,41 @@ public class AuthenticationTester {
         }
     }
 
-
-    public static String getEncryptedBase64String(String key) {
+    /**
+     * 加密数据并返回加密后数据的base64字符串
+     *
+     * @param key  加密密匙
+     * @param data 要加密的数据
+     * @return 加密后数据的base64字符串
+     */
+    public static String getEncryptedBase64String(String key, String data) {
         System.out.println();
         System.out.println("加密数据...");
+        if (data == null || data.length() == 0) {
+            return null;
+        }
         String result = null;
-        UserAuthentication userAuthentication = new UserAuthentication();
-        userAuthentication.setUsername("username");
-        userAuthentication.setRequestTime(System.currentTimeMillis());
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            String json = mapper.writeValueAsString(userAuthentication);
-            System.out.println(json);
-
             // 256位密钥 = 32 bytes Key:
             String charsetName = StandardCharsets.UTF_8.name();
             byte[] keyBytes = key.getBytes(charsetName);
             // 加密:
-            byte[] data = json.getBytes(charsetName);
-            byte[] encrypted = AES_CBC_Tester.encrypt(keyBytes, data);
+            byte[] dataBytes = data.getBytes(charsetName);
+            byte[] encrypted = AES_CBC_Tester.encrypt(keyBytes, dataBytes);
             result = Base64.getEncoder().encodeToString(encrypted);
-            // result = new String(encrypted,charsetName);
             System.out.println("Encrypted: " + Base64.getEncoder().encodeToString(encrypted));
-            // System.out.println("Encrypted: " + result);
         } catch (Exception e) {
             System.out.println("异常：" + e.getMessage());
         }
         return result;
     }
 
+    /**
+     * 解密数据
+     *
+     * @param key                   解密密匙
+     * @param encryptedBase64String 要解密的数据（base64字符串）
+     */
     public static void testDecrypt(String key, String encryptedBase64String) {
 
         System.out.println();
@@ -84,7 +114,7 @@ public class AuthenticationTester {
         String charsetName = StandardCharsets.UTF_8.name();
         try {
             // 解密:
-            byte[] decrypted = AES_CBC_Tester.decrypt(key.getBytes(charsetName),Base64.getDecoder().decode(encryptedBase64String));
+            byte[] decrypted = AES_CBC_Tester.decrypt(key.getBytes(charsetName), Base64.getDecoder().decode(encryptedBase64String));
             System.out.println("Decrypted: " + new String(decrypted, charsetName));
         } catch (Exception e) {
             System.out.println("解密失败：" + e.getMessage());
