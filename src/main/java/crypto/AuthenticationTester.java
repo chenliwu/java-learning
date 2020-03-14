@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import crypto.aes.AES_CBC_Tester;
+import crypto.aes.AES_ECB_Tester;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -17,13 +21,13 @@ public class AuthenticationTester {
     /**
      * 256位密钥 = 32 bytes Key:
      */
-    private static final String KEY = "1234567890abcdef1234567890abcdef";
+    private static final String KEY = "1234567890abcdef";
 
     public static void main(String[] args) {
 
         try {
             UserAuthentication userAuthentication = new UserAuthentication();
-            userAuthentication.setUsername("username");
+            userAuthentication.setUsername("admin");
             userAuthentication.setRequestTime(System.currentTimeMillis());
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(userAuthentication);
@@ -38,6 +42,8 @@ public class AuthenticationTester {
             // encryptedBase64String = encryptedBase64String.substring(0, encryptedBase64String.length() - 3);
             // encryptedBase64String = encryptedBase64String.replace("9","12123");
 
+            System.out.println("http://192.168.31.115:8030/t2/mobile/open/appH5Index?data=" +encodeUrl(encryptedBase64String));
+
             // 解密数据
             testDecrypt(KEY, encryptedBase64String);
 
@@ -46,6 +52,10 @@ public class AuthenticationTester {
         }
 
 
+    }
+
+    private static String encodeUrl(String value) throws Exception {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8.displayName());
     }
 
     public static void test() {
@@ -92,9 +102,12 @@ public class AuthenticationTester {
             byte[] keyBytes = key.getBytes(charsetName);
             // 加密:
             byte[] dataBytes = data.getBytes(charsetName);
-            byte[] encrypted = AES_CBC_Tester.encrypt(keyBytes, dataBytes);
-            result = Base64.getEncoder().encodeToString(encrypted);
-            System.out.println("Encrypted: " + Base64.getEncoder().encodeToString(encrypted));
+            byte[] encrypted = AES_ECB_Tester.encrypt(keyBytes, dataBytes);
+            // result = Base64.getEncoder().encodeToString(encrypted);
+            // result = new sun.misc.BASE64Encoder().encode(encrypted);
+            result = org.apache.commons.codec.binary.Base64.encodeBase64String(encrypted);
+
+            System.out.println("Encrypted: " + result);
         } catch (Exception e) {
             System.out.println("异常：" + e.getMessage());
         }
@@ -113,8 +126,11 @@ public class AuthenticationTester {
         System.out.println("解密数据...");
         String charsetName = StandardCharsets.UTF_8.name();
         try {
+
             // 解密:
-            byte[] decrypted = AES_CBC_Tester.decrypt(key.getBytes(charsetName), Base64.getDecoder().decode(encryptedBase64String));
+            // byte[] decrypted = AES_ECB_Tester.decrypt(key.getBytes(charsetName), Base64.getDecoder().decode(encryptedBase64String));
+            //byte[] decrypted = AES_ECB_Tester.decrypt(key.getBytes(charsetName), new sun.misc.BASE64Decoder().decodeBuffer(encryptedBase64String));
+            byte[] decrypted = AES_ECB_Tester.decrypt(key.getBytes(charsetName), org.apache.commons.codec.binary.Base64.decodeBase64(encryptedBase64String));
             System.out.println("Decrypted: " + new String(decrypted, charsetName));
         } catch (Exception e) {
             System.out.println("解密失败：" + e.getMessage());
@@ -124,10 +140,10 @@ public class AuthenticationTester {
 
 
     static class UserAuthentication {
-        @JsonProperty("username")
+        @JsonProperty("loginName")
         private String username;
 
-        @JsonProperty("requestTime")
+        @JsonProperty("reqTime")
         private Long requestTime;
 
         public String getUsername() {
