@@ -62,9 +62,9 @@ public class ReadFileAndWriteFileTest {
         System.out.println("测试读取文件内容，将每一行转化成List");
         String filePath = "mfsfile.txt";
         List<String> stringList = readFileContentByLineToList(filePath);
-        stringList.stream().forEach((item) -> {
-            System.out.println(item);
-        });
+//        stringList.stream().forEach((item) -> {
+//            System.out.println(item);
+//        });
     }
 
 
