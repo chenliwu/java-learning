@@ -1,5 +1,7 @@
 package collection.set;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -12,6 +14,10 @@ import java.util.TreeSet;
 public class SortedSetDemo {
 
     public static void main(String[] args) {
+        test2();
+    }
+
+    public static void test1() {
         SortedSet<String> sortedSet = new TreeSet<>();
         Collections.addAll(sortedSet, "one tow three fore five six seven eight".split(" "));
         System.out.println(sortedSet);
@@ -38,5 +44,14 @@ public class SortedSetDemo {
         System.out.println(sortedSet.headSet(high));
         System.out.println(sortedSet.tailSet(low));
     }
+
+    public static void test2() {
+        SortedSet<String> sortedSet = new TreeSet<>();
+        for (int i = 0; i <= 5; i++) {
+            sortedSet.add(RandomStringUtils.random(5, true, false));
+        }
+        System.out.println(sortedSet);
+    }
+
 
 }
