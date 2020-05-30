@@ -14,7 +14,7 @@ import java.util.TreeSet;
 public class SortedSetDemo {
 
     public static void main(String[] args) {
-        test2();
+        test1();
     }
 
     public static void test1() {
@@ -40,9 +40,18 @@ public class SortedSetDemo {
         System.out.println("low:" + low);
         System.out.println("high:" + high);
         // 获取子集，范围从fromElement（包含）到toElement（不包含）
+        System.out.println();
+        System.out.println("subSet(fromElement, toElement)方法，获取子集，范围从fromElement（包含）到toElement（不包含）：");
         System.out.println(sortedSet.subSet(low, high));
+
+        System.out.println();
+        System.out.println("headSet(toElement)方法，生成此Set的子集，由小于toElement的元素组成：");
         System.out.println(sortedSet.headSet(high));
+
+        System.out.println();
+        System.out.println("tailSet(toElement)方法，生成此Set的子集，由大于或等于toElement的元素组成：");
         System.out.println(sortedSet.tailSet(low));
+
     }
 
     public static void test2() {
@@ -52,6 +61,4 @@ public class SortedSetDemo {
         }
         System.out.println(sortedSet);
     }
-
-
 }

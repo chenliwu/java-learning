@@ -18,7 +18,25 @@ public class LinkedHashSetDemo {
         linkedHashSet.add("one");
         linkedHashSet.add("two");
         linkedHashSet.add("three");
-        System.out.println(linkedHashSet);
+        foreachHashSet(linkedHashSet);
+    }
+
+    /**
+     * 遍历Set集合
+     *
+     * @param set
+     */
+    static void foreachHashSet(Set<String> set) {
+        System.out.println("for循环遍历set");
+        for (String string : set) {
+            System.out.println(string);
+        }
+
+        System.out.println();
+        System.out.println("java8-foreach遍历set");
+        set.forEach((item) -> {
+            System.out.println(item);
+        });
     }
 
 }
