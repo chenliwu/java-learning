@@ -7,6 +7,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 /**
  * Java - AES加密解密，JS加密解密互通
@@ -24,8 +25,13 @@ public class AES_CBC_JS_Tester {
         // System.out.println("解密数据：" + decrypt(encrypted, AES_KEY, AES_IV));
 
         test1();
+        // testJson();
+        // testLongStringEncrypt();
     }
 
+    /**
+     * 解密失败，则返回的字符串为null
+     */
     public static void test1() {
         try {
             String data = "hello world";
@@ -36,6 +42,50 @@ public class AES_CBC_JS_Tester {
         } catch (Exception e) {
             System.out.println("异常：" + e.getMessage());
         }
+    }
+
+    public static void testJson() {
+        try {
+            String json = "{bfsAt:'bfsAt',bfsBaseUrl:'bfsBaseUrl',op:'op'}";
+            String aesIv = getRandomString(16);
+            System.out.println("iv String:" + aesIv);
+            String encryptData = AesUtils.aesCbcEncrypt(json, AES_KEY, aesIv, StandardCharsets.UTF_8.name());
+            System.out.println("加密后的数据：" + encryptData);
+            String decryptData = AesUtils.aesCbcDecrypt(encryptData, AES_KEY, aesIv, StandardCharsets.UTF_8.name());
+            System.out.println("解密后的数据：" + decryptData);
+        } catch (Exception e) {
+            System.out.println("异常：" + e.getMessage());
+        }
+    }
+
+    public static void testLongStringEncrypt() {
+        try {
+            String json = getRandomString(1000);
+            String aesIv = getRandomString(16);
+            System.out.println("iv String:" + aesIv);
+            String encryptData = AesUtils.aesCbcEncrypt(json, AES_KEY, aesIv, StandardCharsets.UTF_8.name());
+            System.out.println("加密后的数据长度：" + encryptData.length());
+        } catch (Exception e) {
+            System.out.println("异常：" + e.getMessage());
+        }
+    }
+
+
+    /**
+     * 生成随机数
+     *
+     * @param length 随机字符串长度
+     * @return 随机字符串
+     */
+    public static String getRandomString(int length) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(62);
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
     }
 
 
