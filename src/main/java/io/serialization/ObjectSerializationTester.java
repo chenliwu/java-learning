@@ -10,8 +10,8 @@ import java.util.Date;
 public class ObjectSerializationTester {
 
     public static void main(String[] args) {
-        Student student1 = new Student("2019001", "student1", "F");
-        Student student2 = new Student("2019002", "student2", "F");
+        Student student1 = new Student("2019001", "student1", "F","2020-12-17");
+        Student student2 = new Student("2019002", "student2", "F","2020-12-16");
         File file = new File("student.txt");
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);

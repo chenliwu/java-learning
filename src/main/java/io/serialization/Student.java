@@ -12,11 +12,20 @@ public class Student implements Serializable {
     private String name;
     private String sex;
 
+    private transient String birthday;
+
 
     public Student(String sno, String name, String sex) {
         this.sno = sno;
         this.name = name;
         this.sex = sex;
+    }
+
+    public Student(String sno, String name, String sex, String birthday) {
+        this.sno = sno;
+        this.name = name;
+        this.sex = sex;
+        this.birthday = birthday;
     }
 
     public String getSno() {
@@ -43,12 +52,21 @@ public class Student implements Serializable {
         this.sex = sex;
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
                 "sno='" + sno + '\'' +
                 ", name='" + name + '\'' +
                 ", sex='" + sex + '\'' +
+                ", birthday='" + birthday + '\'' +
                 '}';
     }
 }
